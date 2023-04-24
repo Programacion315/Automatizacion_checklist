@@ -1,0 +1,3 @@
+Question,Answer Type,Expected Answer,Critical,Exclude Random
+Is the horn working? ,Yes/No,Y,N,N
+Are the mirrors broken? ,Yes/No,N,N,N

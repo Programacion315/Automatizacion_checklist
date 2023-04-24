@@ -13,28 +13,28 @@ print('░ ░       ░  ░  ░   ░  ░░ ░      ░  ░       ░  �
 print('░                       ░                                                                                                                                          ')
 print('\n\n\n')
 
-words = {}
+
+import csv
 
 print('Enter a feature and write stop when you finish')
 
-
 questions = {
-    "w": "Does the {word} work properly?",
-    "ww": "Do the {word} work correctly?",
-    "d": "Is the {word} broken or damaged?",
-    "dd": "Are the {word} broken or damaged?",
-    "h": "Does the car have any {word}?",
-    "f": "Does the car have {word} around it?",
+    "a": "Is this {word} safe to operate? -y",
+    "b": "Is the {word} working? -y",
+    "c": "Are the {word} working?",
+    "d": "Is {word} readable and correct? -y",
+    "e": "Are the {word} broken? -n",
 }
 
 word_lists = {
-    "w": ["engine", "transmission", "brakes", "lights", "windows", "radio", "air conditioning", "heater", "defroster"],
-    "d": ["engine", "transmission", "brakes", "lights", "windows", "mirrors", "body"],
-    "h": ["scratches", "dents", "rust", "odor"],
-    "f": ["people", "vehicles", "obstacles"],
+    "a": ["equipment"],
+    "b": ["horn",],
+    "c": ["lights",'beepers'],
+    "d": ['data plate'],
+    "e": ['mirrors'],
 }
 
-words = []
+questions_csv = []
 
 while True:
     entrada = input("word: ")
@@ -49,16 +49,18 @@ while True:
     if tipo is None:
         print("Word not recognized, skipping...")
     else:
-        words.append((word, tipo))
+        parts = questions[tipo].format(word=word).split('-')
+        question = parts[0]
+        expected_answer = parts[1]
+        questions_csv.append([question, "Yes/No", expected_answer.upper(), 'N', 'N'])
 
-with open("vehicles.csv", mode="w", newline="") as archivo_csv:
-    writer = csv.writer(archivo_csv)
-    writer.writerow(["Question", "Answer Type", "Expected Answer", "Critical", "Exclude Random"])
-    for word, tipo in words:
-        if tipo == "d":
-            question = "Is the {word} broken or damaged?"
-        else:
-            question = questions.get(tipo, "")
-            question = question.format(word=word)
-        expected_answer = "Y" if tipo in ("w", "h") else "N"
-        writer.writerow([question, "Yes/No", expected_answer, "N", "N"])
+if questions_csv:
+    with open('questions.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Question', 'Answer Type', 'Expected Answer', 'Critical', 'Exclude Random'])
+        writer.writerows(questions_csv)
+    print("Questions saved to 'questions.csv'")
+else:
+    print("No questions entered.")
+
+
